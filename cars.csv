@@ -1,0 +1,41 @@
+id,brand,model,year,price,km,fuel,transmission,engineCC,color
+1,Honda,Vezel,2017,2565000,75500,Hybrid,Automatic,1500,Red
+2,Suzuki,Swift,2023,3410000,38500,Petrol,Automatic,1200,Grey
+3,Suzuki,Cultus,2023,2995000,26000,Petrol,Manual,1000,Black
+4,Hyundai,Tucson,2021,5600000,43500,Petrol,Automatic,2000,Blue
+5,Hyundai,Tucson,2015,3255000,99000,Petrol,Automatic,2000,White
+6,Honda,City,2025,5555000,8500,Petrol,Automatic,1500,Silver
+7,KIA,Picanto,2015,1395000,92000,Petrol,Automatic,1000,White
+8,Toyota,Yaris,2019,2935000,87000,Petrol,Automatic,1300,Red
+9,Toyota,Corolla,2024,6325000,29500,Petrol,Automatic,1600,Grey
+10,Toyota,Hilux,2016,4235000,132500,Diesel,Manual,2400,Red
+11,Toyota,Prius,2020,3340000,83000,Hybrid,Automatic,1800,Red
+12,Suzuki,Swift,2024,3700000,19500,Petrol,Automatic,1200,White
+13,BMW,3 Series,2025,13995000,14500,Petrol,Automatic,2000,Black
+14,Honda,Vezel,2022,5085000,47000,Hybrid,Automatic,1500,Red
+15,KIA,Sportage,2019,4225000,66500,Petrol,Automatic,2000,Grey
+16,Honda,City,2016,2080000,123000,Petrol,Automatic,1500,Grey
+17,BMW,3 Series,2020,8900000,62000,Petrol,Automatic,2000,Red
+18,Suzuki,Swift,2016,1575000,93500,Petrol,Automatic,1200,Blue
+19,Honda,Vezel,2017,2700000,103000,Hybrid,Automatic,1500,Grey
+20,Suzuki,Cultus,2025,3475000,12500,Petrol,Manual,1000,Blue
+21,Honda,Vezel,2020,4140000,77000,Hybrid,Automatic,1500,Grey
+22,BMW,3 Series,2024,13285000,17000,Petrol,Automatic,2000,Grey
+23,Suzuki,Swift,2019,2290000,94000,Petrol,Automatic,1200,Blue
+24,Suzuki,Swift,2015,1610000,116000,Petrol,Automatic,1200,Silver
+25,MG,HS,2019,4690000,94500,Petrol,Automatic,1500,Red
+26,KIA,Sportage,2015,3105000,120000,Petrol,Automatic,2000,White
+27,Toyota,Hilux,2024,9925000,17000,Diesel,Manual,2400,Red
+28,Toyota,Prius,2019,2945000,70000,Hybrid,Automatic,1800,Grey
+29,KIA,Picanto,2021,2575000,60500,Petrol,Automatic,1000,Silver
+30,Suzuki,Swift,2017,1655000,112500,Petrol,Automatic,1200,White
+31,Honda,Civic,2017,3245000,112500,Petrol,Automatic,1500,Blue
+32,Honda,Civic,2021,5795000,68000,Petrol,Automatic,1500,Black
+33,KIA,Picanto,2018,1615000,75500,Petrol,Automatic,1000,White
+34,Toyota,Yaris,2018,2590000,65000,Petrol,Automatic,1500,Grey
+35,BMW,3 Series,2024,12490000,20500,Petrol,Automatic,2000,Grey
+36,Suzuki,Alto,2017,1030000,99000,Petrol,Manual,660,Red
+37,Honda,Vezel,2017,2640000,110000,Hybrid,Automatic,1500,Blue
+38,Suzuki,Cultus,2022,2920000,57500,Petrol,Manual,1000,Silver
+39,KIA,Picanto,2021,2445000,44000,Petrol,Automatic,1000,Silver
+40,BMW,3 Series,2025,13810000,9500,Petrol,Automatic,2000,White
