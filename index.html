@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Car Showroom</title>
+<style>
+  :root { --bg:#f4f6fa; --card:#fff; --text:#1c2333; --muted:#6b7487; --brand:#1f5eff; --danger:#d93636; --line:#e3e7ef; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#121620; --card:#1b2130; --text:#e8ecf5; --muted:#9aa4b8; --brand:#5b8cff; --danger:#ff6b6b; --line:#2b3347; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, Segoe UI, Arial, sans-serif; background:var(--bg); color:var(--text); }
+  header { background:var(--brand); color:#fff; padding:18px 28px; }
+  header h1 { margin:0; font-size:22px; }
+  header p { margin:4px 0 0; opacity:.85; font-size:14px; }
+  main { max-width:1100px; margin:20px auto; padding:0 16px; display:grid; gap:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .card h2 { margin:0 0 12px; font-size:16px; }
+  form { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:10px; align-items:end; }
+  label { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
+  input, select { width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:8px; background:var(--bg); color:var(--text); font-size:14px; }
+  button { padding:10px 16px; border:0; border-radius:8px; background:var(--brand); color:#fff; font-size:14px; cursor:pointer; }
+  button.del { background:var(--danger); padding:6px 10px; font-size:12px; }
+  .filter { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
+  .filter input { width:190px; }
+  .filter input#sBox { width:280px; }
+  button.ghost { background:transparent; color:var(--text); border:1px solid var(--line); }
+  #showing { font-size:13px; color:var(--muted); }
+  #showing.err { color:var(--danger); }
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th, td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  .panel { display:flex; gap:24px; flex-wrap:wrap; font-size:14px; }
+  .panel div span { display:block; font-size:12px; color:var(--muted); }
+  #msg { margin:0 0 10px; font-size:14px; min-height:20px; }
+  .ok { color:#1a9d55; } .err { color:var(--danger); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Car Showroom Management System</h1>
+</header>
+
+<main>
+  <section class="card">
+    <h2>Add a car</h2>
+    <p id="msg"></p>
+    <form id="addForm">
+      <div><label>Brand</label><input name="brand" placeholder="Toyota" required></div>
+      <div><label>Model</label><input name="model" placeholder="Corolla" required></div>
+      <div><label>Year</label><input name="year" type="number" placeholder="2022" required></div>
+      <div><label>Price (Rs)</label><input name="price" type="number" placeholder="7500000" required></div>
+      <div><label>Mileage (km)</label><input name="km" type="number" placeholder="30000" required></div>
+      <div><label>Engine (cc)</label><input name="engineCC" type="number" placeholder="1500 (0 if electric)" required></div>
+      <div><label>Fuel</label>
+        <select name="fuel"><option>Petrol</option><option>Diesel</option><option>Hybrid</option><option>Electric</option></select></div>
+      <div><label>Transmission</label>
+        <select name="transmission"><option>Automatic</option><option>Manual</option></select></div>
+      <div><label>Color</label>
+        <select name="color"><option>White</option><option>Black</option><option>Silver</option><option>Grey</option><option>Red</option><option>Blue</option><option>Brown</option><option>Green</option><option>Other</option></select></div>
+      <div><button type="submit">Add car</button></div>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>DSA panel</h2>
+    <div class="panel">
+      <div><span>Last operation</span><b id="pOp">none yet</b></div>
+      <div><span>Cars in showroom</span><b id="pTotal">0</b></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Inventory</h2>
+    <div class="filter">
+      <input id="sBox" type="search" placeholder="Search brand or model (e.g. toy cor)" autocomplete="off">
+      <input id="fMin" type="number" min="0" placeholder="Min price (Rs)">
+      <input id="fMax" type="number" min="0" placeholder="Max price (Rs)">
+      <button id="fApply" type="button">Filter by price</button>
+      <button id="fClear" type="button" class="ghost">Clear</button>
+      <span id="showing"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ID</th><th>Brand</th><th>Model</th><th>Year</th><th>Price (Rs)</th><th>km</th><th>Engine (cc)</th><th>Fuel</th><th>Transmission</th><th>Color</th><th></th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
+function showMsg(text, ok) {
+  $('msg').textContent = text;
+  $('msg').className = ok ? 'ok' : 'err';
+}
+
+function updatePanel(op, r) {
+  if (r.ok) $('pOp').textContent = op;
+  $('pTotal').textContent = r.total;
+}
+
+let activeFilter = null;   // price filter {min, max}, or null
+let searchText = '';       // what is typed in the search box
+let requestNo = 0;         // used to ignore out-of-date responses while typing fast
+
+function renderRows(cars) {
+  $('rows').innerHTML = cars.map(c => `
+    <tr>
+      <td>${c.id}</td><td>${esc(c.brand)}</td><td>${esc(c.model)}</td><td>${c.year}</td>
+      <td>${c.price.toLocaleString()}</td><td>${c.km.toLocaleString()}</td>
+      <td>${c.engineCC > 0 ? c.engineCC.toLocaleString() : '-'}</td>
+      <td>${esc(c.fuel)}</td><td>${esc(c.transmission)}</td><td>${esc(c.color)}</td>
+      <td><button class="del" onclick="removeCar(${c.id})">Delete</button></td>
+    </tr>`).join('');
+}
+
+function hasSearch() { return /[a-z0-9]/i.test(searchText); }
+
+// Search -> trie, price only -> AVL tree, nothing -> all cars
+function buildUrl() {
+  if (hasSearch()) {
+    return '/api/search?' + new URLSearchParams({ q: searchText, ...(activeFilter || {}) }).toString();
+  }
+  if (activeFilter) return '/api/range?' + new URLSearchParams(activeFilter).toString();
+  return '/api/cars';
+}
+
+// Reloads the table using the current search text and price filter.
+// Returns true on success, false if the server rejected the request.
+async function refresh() {
+  const myRequest = ++requestNo;
+  const data = await (await fetch(buildUrl())).json();
+  if (myRequest !== requestNo) return true;      // a newer request exists, drop this answer
+
+  if (!Array.isArray(data)) {                    // server sent an error message instead of cars
+    $('showing').textContent = data.msg;
+    $('showing').className = 'err';
+    return false;
+  }
+
+  const narrowed = hasSearch() || activeFilter;
+  if (!narrowed) $('pTotal').textContent = data.length;
+  renderRows(data);
+  $('showing').className = '';
+  $('showing').textContent = narrowed
+    ? `Showing ${data.length} of ${$('pTotal').textContent} cars` + (!hasSearch() ? ', cheapest first' : '')
+    : '';
+  return true;
+}
+
+// turns "1e7" or "3000000.5" into a clean whole number string ('' stays '')
+function cleanPrice(v) {
+  v = v.trim();
+  return v === '' ? '' : String(Math.trunc(Number(v)));
+}
+
+async function clearAll() {
+  $('sBox').value = '';
+  $('fMin').value = '';
+  $('fMax').value = '';
+  searchText = '';
+  activeFilter = null;
+  await refresh();
+}
+
+$('sBox').addEventListener('input', async () => {
+  searchText = $('sBox').value;
+  if (await refresh() && hasSearch()) $('pOp').textContent = 'Search';
+});
+
+$('fApply').onclick = async () => {
+  const min = cleanPrice($('fMin').value);
+  const max = cleanPrice($('fMax').value);
+  if (min === '' && max === '') { activeFilter = null; await refresh(); return; }
+
+  const previous = activeFilter;
+  activeFilter = { min, max };
+  if (await refresh()) {
+    $('pOp').textContent = 'Filter by price';
+  } else {
+    activeFilter = previous;                     // bad input: keep the old view
+  }
+};
+$('fClear').onclick = clearAll;
+
+$('addForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const params = new URLSearchParams(new FormData(e.target));
+  const r = await (await fetch('/api/add?' + params.toString(), { method: 'POST' })).json();
+  showMsg(r.msg, r.ok);
+  if (r.ok) { updatePanel('Add car', r); e.target.reset(); await refresh(); }
+});
+
+async function removeCar(id) {
+  const r = await (await fetch('/api/delete?id=' + id, { method: 'POST' })).json();
+  showMsg(r.msg, r.ok);
+  updatePanel('Delete car', r);
+  await refresh();
+}
+
+refresh();
+</script>
+</body>
+</html>
